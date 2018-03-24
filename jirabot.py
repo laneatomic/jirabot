@@ -73,12 +73,6 @@ def fsearch(filter_id, description):
     data = JIRABOT.search_issues(filter_data.jql)
     parse_search(data, description)
 
-#jira = JIRA('https://jira.rallyhealth.com/', basic_auth=(os.environ['JIRA_USER'], os.environ['JIRA_PASS']))
-
-#search = jira.search_issues('project in (OHLP) AND status = Closed AND (labels not in (coreops-helper, choiceops-helper) OR labels is EMPTY) AND assignee is not EMPTY AND Updated > -7d ORDER BY assignee ASC, reporter ASC, Updated DESC')
-
-#for issue in search:
-#    print("%s - %s" % (issue, issue.fields.summary))
 cli.add_command(view)
 cli.add_command(search)
 cli.add_command(fsearch)
