@@ -65,6 +65,39 @@ def parse_search(data, description=False, dest=None):
                 click.echo(issue.fields.description)
 
 @click.command()
+@click.option('-p', '--project', help='The project to open the issue', required=True)
+@click.option('-s', '--summary', help='The summary of the issue', required=True)
+@click.option('-d', '--description', help='The description of the issue')
+@click.option('-t', '--type', 'issue_type', help='The issue type (Story, Bug, etc.), default: Story', default='Story')
+@click.option('-f', '--field', help='Custom field (field:value)', multiple=True)
+def issue(project, summary, description, issue_type, field):
+    """Create an issue in Jira"""
+    if description is None:
+        description = click.edit()
+        if description is None:
+            click.echo('Description is required!')
+            return
+
+    issue_type = issue_type.capitalize()
+
+    issue_dict = {
+        'project': {'key': project},
+        'summary': summary,
+        'description': description,
+        'issuetype': {'name': issue_type},
+    }
+
+    if field:
+        for f in field:
+            name,value = f.split(':', 1)
+            if name.lower() == 'business reason':
+                name = 'customfield_13332'
+            issue_dict.update({name: value})
+
+    new_issue = JIRABOT.create_issue(fields=issue_dict)
+    click.echo('Issue: %s' % new_issue)
+
+@click.command()
 @click.argument('filter_id')
 @click.option('-d', '--description', is_flag=True, help='Show description field for each issue')
 def fsearch(filter_id, description):
@@ -76,3 +109,4 @@ def fsearch(filter_id, description):
 cli.add_command(view)
 cli.add_command(search)
 cli.add_command(fsearch)
+cli.add_command(issue)
