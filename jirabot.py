@@ -99,12 +99,13 @@ def issue(project, summary, description, issue_type, field):
 
 @click.command()
 @click.argument('filter_id')
+@click.option('-c', '--csv', 'dest', help='Output to a CSV')
 @click.option('-d', '--description', is_flag=True, help='Show description field for each issue')
-def fsearch(filter_id, description):
+def fsearch(filter_id, description, dest):
     """Search for issues with a saved filter"""
     filter_data = JIRABOT.filter(filter_id)
     data = JIRABOT.search_issues(filter_data.jql)
-    parse_search(data, description)
+    parse_search(data, description, dest)
 
 cli.add_command(view)
 cli.add_command(search)
