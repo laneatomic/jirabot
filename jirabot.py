@@ -44,7 +44,7 @@ def view(issue):
 @click.option('-d', '--description', is_flag=True, help='Show description field for each issue')
 def search(jql, dest, description):
     """Search for issues with arbitrary JQL"""
-    data = JIRABOT.search_issues(jql)
+    data = JIRABOT.search_issues(jql, maxResults=0)
     parse_search(data, description, dest)
 
 def parse_search(data, description=False, dest=None):
@@ -104,7 +104,7 @@ def issue(project, summary, description, issue_type, field):
 def fsearch(filter_id, description, dest):
     """Search for issues with a saved filter"""
     filter_data = JIRABOT.filter(filter_id)
-    data = JIRABOT.search_issues(filter_data.jql)
+    data = JIRABOT.search_issues(filter_data.jql, maxResults=0)
     parse_search(data, description, dest)
 
 cli.add_command(view)
